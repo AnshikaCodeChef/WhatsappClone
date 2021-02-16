@@ -6,11 +6,12 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import InsertEmoticonIcon from '@material-ui/icons/InsertEmoticon';
 import MicIcon from '@material-ui/icons/Mic';
+import axios from "../../axios"
 // // import { useParams } from "react-router-dom";
 // import db from "../../firebase"
 // import firebase from "firebase"
 // // import {useStateValue} from "../stateprovide/StateProvider"
-function Chat() {
+function Chat({messages}) {
     const [seed, setSeed] = useState("");
     const [input, setInput] = useState("");
 //     const { roomId } = useParams();
@@ -32,8 +33,14 @@ function Chat() {
         setSeed(Math.floor(Math.random() * 5000))
     }, [])
 
-    const sendMessage = (e) => {
+    const sendMessage = async (e) => {
         e.preventDefault();
+        await axios.post('/messages/new',{
+            message:input,
+            name:"demo app",
+            timestamp:"just now",
+            received: false
+        })
 //         console.log("input :", input)
 //         db.collection("rooms").doc(roomId).collection("messages").add({
 //             message:input,
@@ -66,14 +73,18 @@ function Chat() {
                 </div>
             </div>
             <div className="chat__body">
-                <p className="chat__message">
-                    <span className="chat__name">Anshika</span>
-                    This is a message
-                    <span className="chat__timestamp">
-                        {new Date().toUTCString()}
-                    </span>
+                {messages.map((message) => (
+                        <p className={`chat__message ${message.received && "chat__receiver"}`}>
 
-                </p>
+                        <span className="chat__name">{message.name}</span>
+                        {message.message}
+                        <span className="chat__timestamp">
+                            {message.timestamp}
+                        </span>
+    
+                    </p>
+                ))}
+                
                 {/* {messages.map((message)=>(
 
                <p className={`chat__message ${message.name===user.displayName && 'chat__reciever'}`}><span className="chat__name">{message.name}</span> {message.message} <span className="timestamp">{new Date(message.timestamp?.toDate()).toUTCString()}</span> </p>

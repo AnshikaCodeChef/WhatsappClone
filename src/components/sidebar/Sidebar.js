@@ -6,25 +6,25 @@ import ChatIcon from '@material-ui/icons/Chat';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SearchOutlined from '@material-ui/icons/SearchOutlined';
 import SidebarChat from "../sidebarChats/SidebarChats";
-// import db from "../../firebase";
+import db from "../../firebase";
 // // import { useStateValue } from "../stateprovide/StateProvider";
 
 function Sidebar() {
-//     const [rooms, setRooms] = useState([]);
+    const [rooms, setRooms] = useState([]);
 //     const [{user}, dispatch]=useStateValue();
 
-//     useEffect(() => {
-//         const unsubscribe=db.collection("rooms")
-//         db.collection('rooms').onSnapshot(snapshot => (
-//             setRooms(snapshot.docs.map(doc => ({
-//                 id: doc.id,
-//                 data: doc.data(),
-//             })))
-//         ))
-//         return ()=>{
-//                 unsubscribe();
-//         }
-//     }, [])
+    useEffect(() => {
+        const unsubscribe=db.collection("rooms")
+        db.collection('rooms').onSnapshot(snapshot => (
+            setRooms(snapshot.docs.map(doc => ({
+                id: doc.id,
+                data: doc.data(),
+            })))
+        ))
+        return () =>{
+            unsubscribe();
+            }
+    }, [])
     return (
         <div className="sidebar">
 
@@ -56,8 +56,15 @@ function Sidebar() {
                 </div>
             </div>
              <div className="sidebar__chats">
-                 <SidebarChat/>
-                 <SidebarChat/>
+                 <SidebarChat addNewChat/>
+                 {/* <SidebarChat/>
+                 <SidebarChat/> */}
+                 {rooms.map(room =>(
+                     <SidebarChat key={room.id} 
+                     id={room.id}
+                     name={room.data.name}
+                     />
+                 ))}
                 
             </div>
     </div>
